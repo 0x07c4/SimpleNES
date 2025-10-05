@@ -1,11 +1,14 @@
 SimpleNES
 =============
-
-
 An NES emulator written in C++ (now with audio!)
 
 Roughly 50-60% of games should work (ie. games that use either no mapper or mappers 1, 2, 3 and experimental support for 4, 7, 66 and 11).
 
+---
+
+**ARCHIVED**: I no longer have the capacity or motivation to entertain new features/issues/PRs. Feel free to fork and/or use the current build.  
+
+---
 
 
 
