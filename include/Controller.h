@@ -28,11 +28,16 @@ public:
     Byte read();
     void setKeyBindings(const std::vector<sf::Keyboard::Key>& keys);
 
+    // joystick button/axis mapping
+    void setButton(Buttons b, bool pressed);
+
 private:
-    bool                           m_strobe;
-    unsigned int                   m_keyStates;
+    bool         m_strobe = false;
+    unsigned int m_keyStates = 0;
 
     std::vector<sf::Keyboard::Key> m_keyBindings;
+    // runtime-stored button states for joystick
+    bool m_buttonStates[TotalButtons] = {false};
 };
 }
 

@@ -6,19 +6,16 @@ Controller::Controller()
   : m_keyStates(0)
   , m_keyBindings(TotalButtons)
 {
-    //         m_keyBindings[A] = sf::Keyboard::J;
-    //         m_keyBindings[B] = sf::Keyboard::K;
-    //         m_keyBindings[Select] = sf::Keyboard::RShift;
-    //         m_keyBindings[Start] = sf::Keyboard::Return;
-    //         m_keyBindings[Up] = sf::Keyboard::W;
-    //         m_keyBindings[Down] = sf::Keyboard::S;
-    //         m_keyBindings[Left] = sf::Keyboard::A;
-    //         m_keyBindings[Right] = sf::Keyboard::D;
 }
 
 void Controller::setKeyBindings(const std::vector<sf::Keyboard::Key>& keys)
 {
     m_keyBindings = keys;
+}
+
+void Controller::setButton(Buttons b, bool pressed)
+{
+    m_buttonStates[b] = pressed;
 }
 
 void Controller::strobe(Byte b)
@@ -30,7 +27,10 @@ void Controller::strobe(Byte b)
         int shift   = 0;
         for (int button = A; button < TotalButtons; ++button)
         {
-            m_keyStates |= (sf::Keyboard::isKeyPressed(m_keyBindings[static_cast<Buttons>(button)]) << shift);
+            bool keyPressed    = sf::Keyboard::isKeyPressed(m_keyBindings[button]);
+            bool padPressed    = m_buttonStates[button];
+            bool finalPressed  = keyPressed || padPressed;
+            m_keyStates       |= (finalPressed << shift);
             ++shift;
         }
     }
@@ -40,7 +40,12 @@ Byte Controller::read()
 {
     Byte ret;
     if (m_strobe)
-        ret = sf::Keyboard::isKeyPressed(m_keyBindings[A]);
+    {
+        // return only A button continuously
+        bool keyA = sf::Keyboard::isKeyPressed(m_keyBindings[A]);
+        bool padA = m_buttonStates[A];
+        ret       = (keyA || padA);
+    }
     else
     {
         ret           = (m_keyStates & 1);

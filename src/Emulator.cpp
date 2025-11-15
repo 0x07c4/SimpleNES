@@ -114,6 +114,74 @@ void Emulator::run(std::string rom_path)
             {
                 Log::get().setLevel(InfoVerbose);
             }
+        
+            // joystick buttons press
+            if (event.type == sf::Event::JoystickButtonPressed) {
+                unsigned int jid = event.joystickButton.joystickId;
+                unsigned int btn = event.joystickButton.button;
+
+                if (jid == 0) {
+                    switch (btn) {
+                        case 0: m_controller1.setButton(sn::Controller::A,      true); break;
+                        case 1: m_controller1.setButton(sn::Controller::B,      true); break;
+                        case 2: m_controller1.setButton(sn::Controller::Select, true); break;
+                        case 3: m_controller1.setButton(sn::Controller::Start,  true); break;
+
+                        default: break;
+                    }
+                }
+            }
+
+            // joystick buttons release
+            if (event.type == sf::Event::JoystickButtonReleased) {
+                unsigned int jid = event.joystickButton.joystickId;
+                unsigned int btn = event.joystickButton.button;
+
+                if (jid == 0) {
+                    switch (btn) {
+                        case 0: m_controller1.setButton(sn::Controller::A,      false); break;
+                        case 1: m_controller1.setButton(sn::Controller::B,      false); break;
+                        case 2: m_controller1.setButton(sn::Controller::Select, false); break;
+                        case 3: m_controller1.setButton(sn::Controller::Start,  false); break;
+                        default: break;
+                    }
+                }
+            }
+
+            // axis moved
+            if (event.type == sf::Event::JoystickMoved) {
+                unsigned int jid = event.joystickMove.joystickId;
+
+                if (jid == 0) {
+                    float pos  = event.joystickMove.position;
+                    auto axis  = event.joystickMove.axis;
+
+                    switch (axis) {
+                        case sf::Joystick::X: // 左摇杆左右
+                            m_controller1.setButton(sn::Controller::Left,  pos < -50.f);
+                            m_controller1.setButton(sn::Controller::Right, pos >  50.f);
+                            break;
+
+                        case sf::Joystick::Y: // 左摇杆上下
+                            m_controller1.setButton(sn::Controller::Up,   pos < -50.f);
+                            m_controller1.setButton(sn::Controller::Down, pos >  50.f);
+                            break;
+
+                        case sf::Joystick::PovX: // 十字键左右
+                            m_controller1.setButton(sn::Controller::Left,  pos < -50.f);
+                            m_controller1.setButton(sn::Controller::Right, pos >  50.f);
+                            break;
+
+                        case sf::Joystick::PovY: // 十字键上下
+                            m_controller1.setButton(sn::Controller::Up,   pos < -50.f);
+                            m_controller1.setButton(sn::Controller::Down, pos >  50.f);
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
         }
 
         if (focus && !pause)
