@@ -75,7 +75,14 @@ void VirtualScreen::setPixel(std::size_t x, std::size_t y, sf::Color color)
 
 void VirtualScreen::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+    states.transform.translate(m_position);
     target.draw(m_vertices, states);
+}
+
+void VirtualScreen::setPosition(float x, float y)
+{
+    m_position.x = x;
+    m_position.y = y;
 }
 
 }

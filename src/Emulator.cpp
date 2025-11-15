@@ -1,6 +1,7 @@
 #include "Emulator.h"
 #include "APU/Constants.h"
 #include "Log.h"
+#include "SFML/System/Vector2.hpp"
 
 #include <chrono>
 
@@ -114,6 +115,10 @@ void Emulator::run(std::string rom_path)
             {
                 Log::get().setLevel(InfoVerbose);
             }
+            else if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::F11)
+            {
+                toggleFullscreen();
+            }
         
             // joystick buttons press
             if (event.type == sf::Event::JoystickButtonPressed) {
@@ -204,6 +209,16 @@ void Emulator::run(std::string rom_path)
                 m_elapsedTime -= cpu_clock_period_ns;
             }
 
+            sf::Vector2u windowSize = m_window.getSize();
+
+            float newWeight  = NESVideoWidth * m_screenScale;
+            float newHeight  = NESVideoHeight * m_screenScale;
+
+            float posX = (windowSize.x - newWeight) / 2.f;
+            float posY = (windowSize.y - newHeight) / 2.f;
+
+            m_emulatorScreen.setPosition(posX, posY);
+
             m_window.draw(m_emulatorScreen);
             m_window.display();
         }
@@ -265,4 +280,30 @@ void Emulator::muteAudio()
     m_audioPlayer.mute();
 }
 
+void Emulator::toggleFullscreen()
+{
+    if (!m_isFullscreen)
+    {
+        m_windowedMode = sf::VideoMode(NESVideoWidth * m_screenScale, NESVideoHeight * m_screenScale);
+        
+        auto desktop = sf::VideoMode::getDesktopMode();
+        m_window.create(desktop, "SimpleNES", sf::Style::Fullscreen);
+        
+        float scaleX = desktop.width / float(NESVideoWidth);
+        float scaleY = desktop.height / float(NESVideoHeight);
+        m_screenScale = std::min(scaleX, scaleY);
+
+        m_isFullscreen = true;
+    }
+    else
+    {
+        m_window.create(m_windowedMode, "SimpleNES", sf::Style::Titlebar | sf::Style::Close);
+        m_screenScale = m_windowedMode.height / float(NESVideoHeight);
+        m_isFullscreen = false;
+    }
+    m_window.setVerticalSyncEnabled(true);
+
+    // Recreate emulator screen to fit new window size
+    m_emulatorScreen.create(NESVideoWidth, NESVideoHeight, m_screenScale, sf::Color::White);
+}
 }

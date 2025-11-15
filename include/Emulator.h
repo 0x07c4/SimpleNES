@@ -29,6 +29,7 @@ public:
     void setVideoScale(float scale);
     void setKeys(std::vector<sf::Keyboard::Key>& p1, std::vector<sf::Keyboard::Key>& p2);
     void muteAudio();
+    void toggleFullscreen();
 
 private:
     void                    OAMDMA(Byte page);
@@ -55,6 +56,8 @@ private:
     TimePoint               m_lastWakeup;
 
     Duration                m_elapsedTime;
+    bool                    m_isFullscreen = false;
+    sf::VideoMode           m_windowedMode;
 };
 }
 #endif // EMULATOR_H
