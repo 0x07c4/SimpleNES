@@ -1,0 +1,34 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "miniaudio",
+    srcs = ["vendor/miniaudio/miniaudio.c"],
+    hdrs = ["vendor/miniaudio/miniaudio.h"],
+    includes = ["vendor/miniaudio"],
+)
+
+cc_library(
+    name = "simplenes_lib",
+    srcs = glob([
+        "src/**/*.cpp",
+    ]),
+    hdrs = glob([
+        "include/**/*.h",
+    ]),
+    copts = ["-std=c++11"],
+    includes = ["include"],
+    deps = [":miniaudio"],
+)
+
+cc_binary(
+    name = "SimpleNES",
+    srcs = ["main.cpp"],
+    deps = [":simplenes_lib"],
+    copts = ["-std=c++11"],
+    linkopts = [
+        "-lsfml-audio",
+        "-lsfml-graphics",
+        "-lsfml-window",
+        "-lsfml-system",
+    ],
+)

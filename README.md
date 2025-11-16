@@ -59,7 +59,7 @@ Compiling
 You need:
 * [SFML 2.*](#installing-sfml) development headers and library
 * C++11 compliant compiler
-* [CMake](https://cgold.readthedocs.io/en/latest/first-step/installation.html) build system
+* [CMake](https://cgold.readthedocs.io/en/latest/first-step/installation.html) build system (or [Bazel](https://bazel.build))
 
 Compiling is straight forward with cmake, just run cmake on the project directory with CMAKE_BUILD_TYPE=Release
 and you'll get Makefile or equivalent for your platform, with which you can compile the emulator
@@ -79,6 +79,18 @@ $ cd SimpleNES && mkdir build/ && cd build/
 $ cmake -DCMAKE_BUILD_TYPE=Release -DSFML_ROOT=/opt/sfml2 ..
 $ make -j8
 ```
+
+### Building with Bazel
+
+SimpleNES can also be built with Bazel (7.0 or newer). As long as `libsfml-dev` (or the platform equivalent) is installed and
+discoverable on your library path, Bazel can build the emulator with a single command:
+
+```
+$ bazel build //:SimpleNES
+```
+
+The resulting binary will be available under `bazel-bin/SimpleNES`. You can pass the same arguments that are supported by the
+cmake-produced executable.
 See also: [compile.yaml](https://github.com/amhndu/SimpleNES/blob/master/.github/workflows/compile.yml) for platform specific instructions
 
 Download SimpleNES
