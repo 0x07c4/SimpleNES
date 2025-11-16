@@ -82,3 +82,21 @@ jobs:
       with:
         name: SimpleNES-win.exe
         path: build/Release/SimpleNES.exe
+
+  bazel_build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
+
+    - uses: bazelbuild/setup-bazelisk@v2
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y libsfml-dev
+
+    - name: Build with Bazel
+      run: |
+        bazel build //:SimpleNES
